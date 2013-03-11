@@ -1,6 +1,6 @@
 {
    "name": "Last.fm Scrobbler",
-   "version": "1.13",
+   "version": "1.15.1",
 
    "description": "Scrobble music all around the web!",
    "icons": {
@@ -18,7 +18,8 @@
    ],
 
    "background": {
-      "scripts": ["background-ga.js", "md5.js", "jquery-1.6.1.min.js", "jquery.dump.js", "scrobbler.js"]
+      "scripts": ["background-ga.js", "md5.js", "jquery-1.6.1.min.js", "jquery.dump.js", "scrobbler.js", 
+					"ttnet.js","youtube.js","61.js","fizy.js"]
    },
 
    "options_page": "options.html",
@@ -39,6 +40,16 @@
       "matches": ["<all_urls>"],
       "js": ["dummy.js"]
    },
+   {
+	  "matches": [
+		"*://www.ttnetmuzik.com.tr/*",
+		"*://www.youtube.com/watch*", "*://www.youtube.com/user/*",
+		"*://www.thesixtyone.com/*",
+		"*://fizy.com/*", "*://fizy.org/*"
+		],
+	  "js": ["router.js"]
+   }
+   /*
    {
       "matches": ["*://www.ttnetmuzik.com.tr/*"],
       "js": ["jquery-1.6.1.min.js", "jquery.dump.js", "ttnet.js"]
@@ -183,6 +194,6 @@
       "matches": ["*://www.slacker.com/*"],
       "exclude_matches": ["*://www.slacker.com/webplayer/index_embed.vm"],
       "js": ["jquery-1.6.1.min.js", "slacker2.js"]
-   }
+   }*/
    ]
 }

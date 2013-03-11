@@ -38,4 +38,43 @@ $(function(){
       $('#use-notifications-scrobbled').attr('disabled', (!$('#use-notifications').is(':checked')));
    }
    
+   /* choose sites to scrobble */
+   //var sites = ["youtube","ttnet","fizy","thesixtyone"];
+   //localStorage["allSites"] = sites;
+	
+	var sites = {
+		"youtube"		:	true,
+		"ttnet"			:	true,
+		"fizy"			:	true,
+		"thesixtyone"	:	true
+	};
+	chrome.extension.sendRequest({method: "setSites", sites: sites}, function(response) {
+		console.log(response.data);
+	});
+	
+	for(var site in sites){
+		var scrobble = "#scrobble-" + site;
+		
+		// preload scrobble all
+		$(scrobble).attr('checked', true); //(localStorage[scrobble] == 1)
+		
+		$(scrobble).click(function(){
+			sites[site] = this.checked;
+			chrome.extension.sendRequest({method: "setSite", site: site, status: this.checked}, function(response) {
+				console.log(response.data);
+			});
+		});
+	}
+   /*for(var i =0; i<sites.length; i++){
+    var scrobble = "#scrobble-" + sites[i];
+	// preload scrobble all
+    $(scrobble).attr('checked', true); //(localStorage[scrobble] == 1)
+
+	$(scrobble).click(function(){
+		scrobbleSites[sites[i]] = this.checked;
+
+		localStorage["sitesToScrobble"] = sitesToScrobble;
+	   //alert("bahsettiðim konu: " + scrobble + "<br>deðeri ise: " +localStorage[scrobble]);
+    });
+   }*/
 });
