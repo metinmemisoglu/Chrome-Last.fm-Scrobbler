@@ -61,13 +61,13 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 // Other valid options: allFrames, runAt
             });
         }
-        else if(getPattern(ttnet).test(url))) {
+        else if(getPattern(ttnet).test(url)) {
 			chrome.tabs.executeScript(tabId, {
                 file: 'ttnet.js'
             });
 		}
 
-        else if(getPattern(fizy).test(url))) {
+        else if(getPattern(fizy).test(url)) {
 			chrome.tabs.executeScript(tabId, {
                 file: 'ttnet.js'
             });
