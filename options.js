@@ -39,8 +39,6 @@ $(function(){
    }
    
    /* choose sites to scrobble */
-   //var sites = ["youtube","ttnet","fizy","thesixtyone"];
-   //localStorage["allSites"] = sites;
 	
 	var sites = {
 		"youtube"		:	true,
@@ -65,16 +63,4 @@ $(function(){
 			});
 		});
 	}
-   /*for(var i =0; i<sites.length; i++){
-    var scrobble = "#scrobble-" + sites[i];
-	// preload scrobble all
-    $(scrobble).attr('checked', true); //(localStorage[scrobble] == 1)
-
-	$(scrobble).click(function(){
-		scrobbleSites[sites[i]] = this.checked;
-
-		localStorage["sitesToScrobble"] = sitesToScrobble;
-	   //alert("bahsettiðim konu: " + scrobble + "<br>deðeri ise: " +localStorage[scrobble]);
-    });
-   }*/
 });
