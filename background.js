@@ -1,27 +1,49 @@
+/** name as an id
+  * label for options page text
+  * wildcard for the url pattern of the site
+  * js = contentscript js file name
+  * css = style sheet file name
+  */  
 var sites = [
     {
         name     : "youtube",
         label    : "YouTube.com",
-        active   : true,
         wildcard : ["*://www.youtube.com/watch*", "*://www.youtube.com/user/*"],
-        js       : ["youtube.js"],
-        css      : ["youtube.css"]
+        js       : "youtube.js",
+        css      : "youtube.css"
+    },
+    {
+        name     : "thesixtyone",
+        label    : "The Sixty One",
+        wildcard : ["*://www.thesixtyone.com/*"],
+        js       : '61.js'
+    },
+    {
+        name     : 'soundcloud',
+        label    : 'SoundCloud.com',
+        wildcard : ["*://soundcloud.com/*"],
+        js       : "soundcloud.js"
     },
     {
         name     : "ttnet",
         label    : "TTNetMüzik",
-        active   : true,
         wildcard : ["*://www.ttnetmuzik.com.tr/*"],
-        js       : ["ttnet.js"]
+        js       : "ttnet.js"
     },
     {
         name     : "fizy",
         label    : "Fizy.org / Fizy.com",
-        active   : true,
         wildcard : ["*://fizy.com/*", "*://fizy.org/*"],
-        js       : ["fizy.js"]
+        js       : "fizy.js"
     }
 ];
+
+var siteStatus = {};
+
+// set true for all status
+for(var i = 0; i<sites.length; i++){
+    siteStatus[sites[i].name] = true;
+}
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.method == "getSites"){
@@ -31,10 +53,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         var name = request.site;
         var status = request.active;
 
-        //TODO localStorage[name] = status;
-
-        console.log("request.site geldi hanıııımmmm: ");
-        console.log(request.site);
+        siteStatus[name] = status;
     }
 });
 
@@ -76,26 +95,24 @@ function getPattern(wildcardArr){
 	var pattern = new RegExp(parsed.join('|'));
 	return pattern;
 }
-// arrays of wildcards
-var youtube = ["*://www.youtube.com/watch*", "*://www.youtube.com/user/*"];
-var ttnet = ["*://www.ttnetmuzik.com.tr/*"];
-var fizy = ["*://fizy.com/*", "*://fizy.org/*"];
-
-
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete') {
         var url = tab.url.split('#')[0]; // Exclude URL fragments
-        if (getPattern(youtube).test(url)) {
-            chrome.tabs.executeScript(tabId, {file: 'youtube.js',runAt:'document_end'});
-            chrome.tabs.insertCSS(tabId, {file: 'youtube.css',runAt:'document_end'});
-        }
-        else if(getPattern(ttnet).test(url)) {
-			chrome.tabs.executeScript(tabId, {file: 'ttnet.js'});
-		}
 
-        else if(getPattern(fizy).test(url)) {
-			chrome.tabs.executeScript(tabId, {file: 'fizy.js',runAt:'document_end'});
-		}
+        //check urls one by one if site is active for scrobble and matches the pattern
+        for(var i = 0; i<sites.length; i++){
+            var site = sites[i];
+            var name = site.name;
+            var wildcard = site.wildcard;
+            if(siteStatus[name] && getPattern(wildcard).test(url)){
+                //site.js is not the js file name site object's js property is js file name's string value = site['js']
+                chrome.tabs.executeScript(tabId, {file: site.js ,runAt:'document_end'});
+                if(site.css){
+                    chrome.tabs.insertCSS(tabId, {file: site.css,runAt:'document_end'});
+                }
+            }
+        }
+
     }
 });
