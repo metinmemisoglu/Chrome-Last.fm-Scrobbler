@@ -38,29 +38,66 @@ $(function(){
       $('#use-notifications-scrobbled').attr('disabled', (!$('#use-notifications').is(':checked')));
    }
    
-   /* choose sites to scrobble */
-	
-	var sites = {
-		"youtube"		:	true,
-		"ttnet"			:	true,
-		"fizy"			:	true,
-		"thesixtyone"	:	true
-	};
-	chrome.extension.sendRequest({method: "setSites", sites: sites}, function(response) {
-		console.log(response.data);
-	});
-	
+   /* choose sites to scrobble 
+	var sites = {    
+      "youtube"       :   true,
+      "ttnet"         :   true,
+      "fizy"          :   true,
+      "thesixtyone"   :   true
+   }*/
+
+
+	chrome.extension.sendMessage({method: "getSites", sites: sites}, function(response) {
+      //get all sites from background.js
+		var newSites = response.sites;
+
+      //create a checkbox for each site
+      for(var i = 0; i<newSites.length;i++){
+         var name = newSites[i].name;
+         var scrobble = "scrobble-" + name;
+         var label = newSites[i].label;
+
+         $("<input/>", {
+            type: "checkbox",
+            id: scrobble,
+            name: name,
+            checked: "checked"
+         }).appendTo("#sitesToScrobblePanel");
+
+         $("<label>", {
+            for: scrobble,
+            title: "Scrobble " + label,
+            html: label
+         })
+         .appendTo("#sitesToScrobblePanel");
+
+         $("<br>")
+         .appendTo("#sitesToScrobblePanel");
+
+         //send message to background.js if site status changed
+         $('#' + scrobble).click(function(){
+            status = $('#' + scrobble).is(':checked');
+            chrome.extension.sendMessage({method: "setSite", site: name, active: status}, function(response) {
+               console.log(response.data);
+            });
+         });
+      }
+
+   });
+
+
+	/*
 	for(var site in sites){
 		var scrobble = "#scrobble-" + site;
 		
 		// preload scrobble all
-		$(scrobble).attr('checked', true); //(localStorage[scrobble] == 1)
+		//$(scrobble).attr('checked', true); //(localStorage[scrobble] == 1)
 		
 		$(scrobble).click(function(){
 			sites[site] = this.checked;
-			chrome.extension.sendRequest({method: "setSite", site: site, status: this.checked}, function(response) {
+			chrome.extension.sendMessage({method: "setSite", site: site, status: this.checked}, function(response) {
 				console.log(response.data);
 			});
 		});
-	}
+	}*/
 });

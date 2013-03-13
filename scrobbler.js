@@ -465,7 +465,7 @@ function submit() {
       setActionIcon(ACTION_SCROBBLED);
 
       // stats
-      _gaq.push(['_trackEvent', 'Track scrobbled']);
+      //_gaq.push(['_trackEvent', 'Track scrobbled']);
 
       console.log('submitted %s - %s (%s)', song.artist, song.track, http_request.responseText);
 
@@ -579,7 +579,7 @@ chrome.extension.onRequest.addListener(
                   break;
 
             case "trackStats":
-      		_gaq.push(['_trackEvent', request.text]);
+      		//_gaq.push(['_trackEvent', request.text]);
       		sendResponse({});
       		break;
 

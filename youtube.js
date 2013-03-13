@@ -1,4 +1,3 @@
-var youtube = function(){
 // State for event handlers
 var state = 'init';
 
@@ -347,5 +346,3 @@ chrome.extension.onRequest.addListener(
          }
    }
 );
-
-};
