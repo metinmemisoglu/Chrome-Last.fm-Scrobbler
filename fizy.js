@@ -3,16 +3,20 @@
  * http://www.yasinokumus.com
  */
  
-var player = "#nowplaying";
+//var player = "#nowplaying";
 var playingText = "#nowPlayingText";
+var lastSend;
 
-$(function(){
+var progress = '#progressbar-loaded';
+
+$(document).ready(function(){
 	//if opened by song
 	process();
-
-	$(player).bind('DOMSubtreeModified', function(e){
-		process();
-	});
+   
+   $(progress).bind('DOMSubtreeModified', function(e){
+      if($(progress).css('width')=='100%')
+         process();
+   });
 	
 	$(window).unload(function() {      
 		// reset the background scrobbler song data
