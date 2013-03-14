@@ -38,7 +38,7 @@ $(function(){
       $('#use-notifications-scrobbled').attr('disabled', (!$('#use-notifications').is(':checked')));
    }
 
-	chrome.extension.sendMessage({method: "getSites", sites: sites}, function(response) {
+	chrome.extension.sendMessage({method: "getSites"}, function(response) {
       //get all sites from background.js
 		var newSites = response.sites;
 
