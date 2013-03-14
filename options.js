@@ -37,15 +37,6 @@ $(function(){
       $('#use-notifications-nowplaying').attr('disabled', (!$('#use-notifications').is(':checked')));
       $('#use-notifications-scrobbled').attr('disabled', (!$('#use-notifications').is(':checked')));
    }
-   
-   /* choose sites to scrobble 
-	var sites = {    
-      "youtube"       :   true,
-      "ttnet"         :   true,
-      "fizy"          :   true,
-      "thesixtyone"   :   true
-   }*/
-
 
 	chrome.extension.sendMessage({method: "getSites", sites: sites}, function(response) {
       //get all sites from background.js
