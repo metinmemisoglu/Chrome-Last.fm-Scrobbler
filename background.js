@@ -9,8 +9,7 @@ var sites = [
         name     : "youtube",
         label    : "YouTube.com",
         wildcard : ["*://www.youtube.com/watch*", "*://www.youtube.com/user/*"],
-        js       : "youtube.js",
-        css      : "youtube.css"
+        js       : "youtube.js"
     },
     {
         name     : "thesixtyone",
@@ -106,11 +105,8 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
             var name = site.name;
             var wildcard = site.wildcard;
             if(siteStatus[name] && getPattern(wildcard).test(url)){
-                //site.js is not the js file name site object's js property is js file name's string value = site['js']
+                //site.js is not the js file name. it is site object's "js" property; site['js']
                 chrome.tabs.executeScript(tabId, {file: site.js ,runAt:'document_end'});
-                if(site.css){
-                    chrome.tabs.insertCSS(tabId, {file: site.css,runAt:'document_end'});
-                }
             }
         }
 
