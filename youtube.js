@@ -8,7 +8,7 @@ var clipTitle = '';
 var options = {};
 
 $(document).ready(function() {
-    chrome.extension.sendRequest({type: 'getOptions'}, function(response) {
+    chrome.extension.sendMessage({type: 'getOptions'}, function(response) {
        options = response.value;
        init();
     });
@@ -99,7 +99,7 @@ function init() {
    $(window).unload(function() {
 
       // reset the background scrobbler song data
-      chrome.extension.sendRequest({type: 'reset'});
+      chrome.extension.sendMessage({type: 'reset'});
 
       return true;
    });
@@ -247,7 +247,7 @@ function updateNowPlaying() {
    displayMsg();
 
    // Get clip info from youtube api
-   chrome.extension.sendRequest({type: "xhr", url: googleURL}, function(response) {
+   chrome.extension.sendMessage({type: "xhr", url: googleURL}, function(response) {
     var info = JSON.parse(response.text);
     var parsedInfo = parseInfo(info.entry.title.$t);
       var artist = null;
@@ -297,16 +297,16 @@ function updateNowPlaying() {
          duration = info.entry.media$group.yt$duration.seconds;
 
       // Validate given artist and track (even for empty strings)
-      chrome.extension.sendRequest({type: 'validate', artist: artist, track: track}, function(response) {
+      chrome.extension.sendMessage({type: 'validate', artist: artist, track: track}, function(response) {
          // on success send nowPlaying song
          if (response != false) {
             var song = response; // contains valid artist/track now
             // substitute the original duration with the duration of the video
-            chrome.extension.sendRequest({type: 'nowPlaying', artist: song.artist, track: song.track, duration: duration});
+            chrome.extension.sendMessage({type: 'nowPlaying', artist: song.artist, track: song.track, duration: duration});
          }
          // on failure send nowPlaying 'unknown song'
          else {
-            chrome.extension.sendRequest({type: 'nowPlaying', duration: duration});
+            chrome.extension.sendMessage({type: 'nowPlaying', duration: duration});
             displayMsg('Not recognized');
          }
     });
@@ -327,7 +327,7 @@ function getOption(key) {
 /**
  * Listen for requests from scrobbler.js
  */
-chrome.extension.onRequest.addListener(
+chrome.extension.onMessage.addListener(
    function(request, sender, sendResponse) {
          switch(request.type) {
             // called after track has been successfully marked as 'now playing' at the server
@@ -344,5 +344,6 @@ chrome.extension.onRequest.addListener(
                //alert('submit fail');
                break;
          }
+         return true;
    }
 );

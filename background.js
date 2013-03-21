@@ -34,14 +34,55 @@ var sites = [
         label    : "Fizy.org / Fizy.com",
         wildcard : ["*://fizy.com/*", "*://fizy.org/*"],
         js       : "fizy.js"
+    },
+    {
+        name: "google-music", 
+        label: "Google Music",
+        wildcard: ["*://play.google.com/music/*"],
+        js: "googlemusic.js"
+    },
+    {
+        name: "new-myspace",
+        label: "New MySpace",
+        wildcard: ["*://new.myspace.com/*"],
+        js: "newmyspace.js"
+    },
+    {
+        name: "pitchfork",
+        label: "Pitchfork",
+        wildcard: ["*://pitchfork.com/*", "*://www.pitchfork.com/*"],
+        js: "pitchfork.js"
+    },
+    {
+        name: "virginradiotr",
+        label: "Virgin Radio Turkey (Radyo Eksen)",
+        wildcard: ["*://*.virginradioturkiye.com/*","*://*.radioeksen.com/*"],
+        js: "virginradiotr.js"
+    },{
+       name: "ghostly",
+       js: "ghostly.js",
+       wildcard: ["http://ghostly.com/discovery/play"]
+    },
+    {
+        name: "bandcamp",
+        js: "bandcamp.js",
+        wildcard: ["*://*.bandcamp.com/*"]
+    },
+    {
+        name: "grooveshark",
+        js: "grooveshark.js",
+        wildcard: ["*://grooveshark.com/*"]
     }
 ];
 
-var siteStatus = {};
+//var siteStatus = {};
 
 // set true for all status
 for(var i = 0; i<sites.length; i++){
-    siteStatus[sites[i].name] = true;
+    (function(key){
+        console.log("baba: " + sites[i].name + " - adamın dibi:" +  localStorage[sites[i].name]);    
+    })(i);
+    //localStorage[sites[i].name] = true;
 }
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -52,8 +93,12 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         var name = request.site;
         var status = request.active;
 
-        siteStatus[name] = status;
+        localStorage[name] = status;
+        console.log("name: " + name);
+        console.log("status: " + status);
+        console.log("localStorage: " + localStorage[name]);
     }
+    return true;
 });
 
 function parse_match_pattern(input) {
@@ -104,9 +149,16 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
             var site = sites[i];
             var name = site.name;
             var wildcard = site.wildcard;
-            if(siteStatus[name] && getPattern(wildcard).test(url)){
+            //console.log("name: " + name + " - locals:" + localStorage[name]);
+            
+//            var dff = $.Deferred();
+   //         dff.resolve(localStorage[name]);
+ //           var stat = (function(){ return localStorage[name]; })();
+
+            if(localStorage[name] && getPattern(wildcard).test(url)){
                 //site.js is not the js file name. it is site object's "js" property; site['js']
                 chrome.tabs.executeScript(tabId, {file: site.js ,runAt:'document_end'});
+                break;
             }
         }
 

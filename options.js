@@ -48,6 +48,12 @@ $(function(){
          var scrobble = "scrobble-" + name;
          var label = newSites[i].label;
 
+         if(!label){
+            label = name;
+         }
+
+         console.log("creating checkbox for site: " + name + " - " + scrobble + " - " + label);
+
          $("<input/>", {
             type: "checkbox",
             id: scrobble,
@@ -66,9 +72,10 @@ $(function(){
          .appendTo("#sitesToScrobblePanel");
 
          //send message to background.js if site status changed
-         $('#' + scrobble).click(function(){
-            status = $('#' + scrobble).is(':checked');
-            chrome.extension.sendMessage({method: "setSite", site: name, active: status}, function(response) {
+         $('#' + scrobble).change(function(){            
+            var status = $(this).is(':checked');
+            //console.log('#' + this.id + " : " + status);
+            chrome.extension.sendMessage({method: "setSite", site: this.id.replace("scrobble-",""), active: status}, function(response) {
                console.log(response.data);
             });
          });
