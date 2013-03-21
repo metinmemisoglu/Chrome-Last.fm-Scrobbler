@@ -12,7 +12,7 @@
  */
 
 const APP_NAME = "Chrome Last.fm Scrobbler";
-const APP_VERSION = "1.13";
+const APP_VERSION = "1.15";
 
 
 // browser tab with actually scrobbled track
@@ -465,7 +465,7 @@ function submit() {
       setActionIcon(ACTION_SCROBBLED);
 
       // stats
-      //_gaq.push(['_trackEvent', 'Track scrobbled']);
+      _gaq.push(['_trackEvent', 'Track scrobbled']);
 
       console.log('submitted %s - %s (%s)', song.artist, song.track, http_request.responseText);
 
@@ -497,13 +497,13 @@ function submit() {
  * validate(artist, track) - validate artist-track pair against last.fm and return false or the valid song
  */
 chrome.extension.onRequest.addListener(
-	function(request, sender, sendResponse) {
+   function(request, sender, sendResponse) {
          switch(request.type) {
 
             // Called when a new song has started playing. If the artist/track is filled,
             // they have to be already validated! Otherwise they can be corrected from the popup.
             // Also sets up a timout to trigger the scrobbling procedure (when all data are valid)
-   		case "nowPlaying":
+         case "nowPlaying":
                   console.log('nowPlaying requested');
                   console.log($.dump(request));
 
@@ -565,8 +565,8 @@ chrome.extension.onRequest.addListener(
                      scrobbleTimeout = setTimeout(submit, min_time * 1000);
                   }
 
-      		sendResponse({});
-      		break;
+            sendResponse({});
+            break;
 
             // called when the window closes / unloads before the song can be scrobbled
             case "reset":
@@ -579,42 +579,42 @@ chrome.extension.onRequest.addListener(
                   break;
 
             case "trackStats":
-      		//_gaq.push(['_trackEvent', request.text]);
-      		sendResponse({});
-      		break;
+            _gaq.push(['_trackEvent', request.text]);
+            sendResponse({});
+            break;
 
             // returns the options in key => value pseudomap
             case "getOptions":
                   var opts = {};
-      		for (var x in localStorage)
+            for (var x in localStorage)
                      opts[x] = localStorage[x];
                   sendResponse({value: opts});
-      		break;
+            break;
 
             // do we need this anymore? (content script can use ajax)
             case "xhr":
-      		var http_request = new XMLHttpRequest();
-      		http_request.open("GET", request.url, true);
-      		http_request.onreadystatechange = function() {
-      			if (http_request.readyState == 4 && http_request.status == 200)
-      				sendResponse({text: http_request.responseText});
-      		};
-      		http_request.send(null);
-      		break;
+            var http_request = new XMLHttpRequest();
+            http_request.open("GET", request.url, true);
+            http_request.onreadystatechange = function() {
+               if (http_request.readyState == 4 && http_request.status == 200)
+                  sendResponse({text: http_request.responseText});
+            };
+            http_request.send(null);
+            break;
 
             // for login
-   		case "newSession":
-      		sessionID = "";
-      		break;
+         case "newSession":
+            sessionID = "";
+            break;
 
             // connector tells us it is disabled
-   		case "reportDisabled":
-      		setActionIcon(ACTION_CONN_DISABLED, sender.tab.id);
-      		break;
+         case "reportDisabled":
+            setActionIcon(ACTION_CONN_DISABLED, sender.tab.id);
+            break;
 
             // Checks if the request.artist and request.track are valid and
             // returns false if not or a song structure otherwise (may contain autocorrected values)
-      	case "validate":
+         case "validate":
                   console.log('validate requested');
 
                   var res = validate(request.artist, request.track);
@@ -627,5 +627,5 @@ chrome.extension.onRequest.addListener(
             default:
                   console.log('Unknown request: %s', $.dump(request));
          }
-	}
+   }
 );

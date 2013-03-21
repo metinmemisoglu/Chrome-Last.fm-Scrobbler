@@ -248,8 +248,8 @@ function updateNowPlaying() {
 
    // Get clip info from youtube api
    chrome.extension.sendRequest({type: "xhr", url: googleURL}, function(response) {
-   	var info = JSON.parse(response.text);
-   	var parsedInfo = parseInfo(info.entry.title.$t);
+    var info = JSON.parse(response.text);
+    var parsedInfo = parseInfo(info.entry.title.$t);
       var artist = null;
       var track = null;
 
@@ -291,7 +291,7 @@ function updateNowPlaying() {
 
       // get the duration from the YT API response
       var duration = '';
-   	if (info.entry.media$group.media$content != undefined)
+    if (info.entry.media$group.media$content != undefined)
          duration = info.entry.media$group.media$content[0].duration;
       else if (info.entry.media$group.yt$duration.seconds != undefined)
          duration = info.entry.media$group.yt$duration.seconds;
@@ -309,7 +309,7 @@ function updateNowPlaying() {
             chrome.extension.sendRequest({type: 'nowPlaying', duration: duration});
             displayMsg('Not recognized');
          }
-   	});
+    });
 
    });
 
