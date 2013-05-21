@@ -36,13 +36,13 @@
 
    "page_action": {
       "chromeBroken": "remove this line after issue #86449 is resolved"
-   },
+   }/*,
 
    "content_scripts": [
    {
       "matches": ["<all_urls>"],
       "js": ["dummy.js","jquery-1.6.1.min.js"]
-   }/*,   
+   },   
    {
       "matches": ["*://plus.google.com/*youtube/player"],
       "js": ["jquery-1.6.1.min.js", "jquery.dump.js", "google+.js"],
@@ -128,6 +128,6 @@
       "matches": ["*://www.slacker.com/*"],
       "exclude_matches": ["*://www.slacker.com/webplayer/index_embed.vm"],
       "js": ["jquery-1.6.1.min.js", "slacker2.js"]
-   }*/
-   ]
+   }
+   ]*/
 }

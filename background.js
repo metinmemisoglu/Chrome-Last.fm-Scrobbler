@@ -80,7 +80,10 @@ var sites = [
 // set true for all status
 for(var i = 0; i<sites.length; i++){
     (function(key){
-        console.log("baba: " + sites[i].name + " - adamın dibi:" +  localStorage[sites[i].name]);    
+        console.log("baba: " + sites[i].name + " - adamın dibi:" +  localStorage[sites[i].name]);
+        if(localStorage[sites[i].name] === undefined) {
+            localStorage[sites[i].name] =true;
+        }    
     })(i);
     //localStorage[sites[i].name] = true;
 }
@@ -97,6 +100,13 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
         console.log("name: " + name);
         console.log("status: " + status);
         console.log("localStorage: " + localStorage[name]);
+
+        if(status){
+            chrome.tabs.onUpdated.addListener(scrobbleListener);
+        }
+        else {
+            chrome.tabs.onUpdated.removeListener(scrobbleListener);
+        }
     }
     return true;
 });
@@ -140,7 +150,9 @@ function getPattern(wildcardArr){
 	return pattern;
 }
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+chrome.tabs.onUpdated.addListener(scrobbleListener);
+
+var scrobbleListener = function(tabId, changeInfo, tab) {
     if (changeInfo.status === 'complete') {
         var url = tab.url.split('#')[0]; // Exclude URL fragments
 
@@ -161,6 +173,5 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
                 break;
             }
         }
-
     }
-});
+};
