@@ -3,30 +3,46 @@
  * http://www.yasinokumus.com
  */
  
-var player = "#nowplaying";
-var playingText = "#nowPlayingText";
+var playingText = ".nowplaying-song";
+var progressbarText = "#progressbar-loaded";
+
+var artistClass='.artist_title';
+var trackClass='.title';
 
 $(function(){
-	//if opened by song
-	process();
+   var player = $(playingText);
+   var progressbar = $(progressbarText);
 
-	$(player).bind('DOMSubtreeModified', function(e){
-		process();
-	});
-	
-	$(window).unload(function() {      
-		// reset the background scrobbler song data
-		chrome.runtime.sendMessage({type: 'reset'});
-		return true;      
-	});
+   console.log('acaba' + progressbar.css('left'));
+
+   player.bind('DOMSubtreeModified',function(){
+      console.log('belki' + progressbar.css('left'));
+   });
+
+/*   player.bind('DOMSubtreeModified', function(e){
+      console.log(player.css('left'));
+
+      //chrome.runtime.sendMessage({type: 'reset'});
+      //process();
+   });
+
+      //if opened by song
+      //process();
+
+      /*$(window).unload(function() {      
+         // reset the background scrobbler song data
+         chrome.runtime.sendMessage({type: 'reset'});
+         return true;      
+      }); */
 });
 
 function process(){
-	var title = $(playingText).text().replace(/^\s*\[[^\]]+\]/, ''); // [minute-second] etc. ignored
+	//var title = $(playingText).text().replace(/^\s*\[[^\]]+\]/, ''); // [minute-second] etc. ignored
 	
-   var info = parseTitle(title);
-	var artist = info['artist'];
-	var track = info['track'];
+   //var info = parseTitle(title);
+	
+   var artist = $(artistClass).html(); // info['artist'];
+   var track = $(trackClass).html(); //info['track'];
 	if(track != undefined && artist != undefined){
 		chrome.runtime.sendMessage({type: 'validate', artist: artist, track: track}, function(response) {
 			if (response != false){
@@ -35,8 +51,14 @@ function process(){
 			}
 		});
 	}
+   // on failure send nowPlaying 'unknown song'
+   else {
+      chrome.runtime.sendMessage({type: 'nowPlaying', duration: duration});
+   }
 }
+
 function parseTitle(artistTitle){
+   console.log('This function is not used for current fizy layout.');
    var artist = '';
    var track = '';
    
@@ -63,7 +85,7 @@ function parseTitle(artistTitle){
  * (copied from youtube.js because some musics on fizy directly come from youtube)
  */
 function cleanArtistTrack(artist, track) {
-
+   console.log('This function is not used for current fizy layout.');
    // Do some cleanup
    artist = artist.replace(/^\s+|\s+$/g,'');
    track = track.replace(/^\s+|\s+$/g,'');
